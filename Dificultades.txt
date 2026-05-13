@@ -1,0 +1,1 @@
+Lo más difícil del proyecto fue entender y manejar correctamente la asincronía en JavaScript. Trabajar con `fetch`, resolver las Promesas y procesar el JSON me tomó algo de tiempo, especialmente para asegurarme de que el código no intentara mostrar información en pantalla antes de que los datos de la PokéAPI estuvieran completamente descargados.
