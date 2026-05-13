@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #ef5350;
+            color: white;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0 0 5px 0;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            padding: 20px;
+            text-transform: capitalize;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .card img {
+            max-width: 96px;
+            height: 96px;
+            background-color: #f8f9fa;
+            border-radius: 50%;
+        }
+
+        .card h3 {
+            margin: 10px 0 0 0;
+            color: #333;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pokédex Básica</h1>
+    </header>
+
+    <main id="pokedex-container" class="grid-container">
+        <p id="loading-text">Cargando Pokémon...</p>
+    </main>
+
+    <script>
+        const pokedexContainer = document.getElementById('pokedex-container');
+
+        async function fetchPokemon() {
+            try {
+                const urlList = 'https://pokeapi.co/api/v2/pokemon?limit=12';
+                const response = await fetch(urlList);
+                const dataList = await response.json();
+
+                pokedexContainer.innerHTML = '';
+
+                for (const pokemon of dataList.results) {
+                    const pokeDetailsResponse = await fetch(pokemon.url);
+                    const pokeData = await pokeDetailsResponse.json();
+                    
+                    renderPokemonCard(pokeData);
+                }
+
+            } catch (error) {
+                console.error('Ocurrió un error al consumir la API:', error);
+                pokedexContainer.innerHTML = '<p>Error al cargar los datos. Revisa la conexión.</p>';
+            }
+        }
+
+        function renderPokemonCard(pokemon) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+
+            const sprite = pokemon.sprites.front_default;
+            const name = pokemon.name;
+
+            card.innerHTML = `
+                <img src="${sprite}" alt="Imagen de ${name}">
+                <h3>${name}</h3>
+            `;
+
+            pokedexContainer.appendChild(card);
+        }
+
+        fetchPokemon();
+    </script>
+</body>
+</html>
